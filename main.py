@@ -9,9 +9,6 @@ from fastapi.responses import StreamingResponse
 
 app = modal.App("rachel-sandbox")
 
-# Should the token id/secret be in the request headers/cookies?
-# @modal.web_endpoint()
-# , modal_token_id: str, modal_token_secret: str, modal_environment: str):
 
 @app.function()
 async def run_user_code(code: str, session_id: str, session_secret: str, workspace_name: str, modal_environment: str):
@@ -89,38 +86,6 @@ def api():
                 yield f"data: {json.dumps(dict(text=line), ensure_ascii=False)}\n\n"
 
         return StreamingResponse(stream(), media_type="text/event-stream")
-
-
-
-
-# frontend_path = Path(__file__).parent / "frontend"
-
-
-# @app.function(
-#     mounts=[modal.Mount.from_local_dir(frontend_path, remote_path="/assets")],
-#     allow_concurrent_inputs=20,
-#     keep_warm=2,
-# )
-# @modal.asgi_app(label="exec")
-# def api():
-#     from fastapi import FastAPI
-#     from fastapi.responses import StreamingResponse
-#     from fastapi.staticfiles import StaticFiles
-
-#     web_app = FastAPI()
-
-#     @web_app.get("/execute")
-#     async def execute(code: str):
-#         print(code)
-
-#         async def stream():
-#             async for line in run_user_code.remote_gen.aio(code, ):
-#                 yield f"data: {json.dumps(dict(text=line), ensure_ascii=False)}\n\n"
-
-#         return StreamingResponse(stream(), media_type="text/event-stream")
-
-#     web_app.mount("/", StaticFiles(directory="/assets", html=True))
-#     return web_app
 
 
 test_text = """import time
